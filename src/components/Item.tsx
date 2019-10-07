@@ -1,7 +1,8 @@
 import React, { memo } from "react";
 import "../css/mainStyle.css"
 
-export const Item = memo(({ data }) => {
+
+export const Item = memo(({ data }: any) => {
   return (
     <div className="gallaryFlexItems">
       {data.thumbnail !== "self" && <img src={data.thumbnail} alt="" />}

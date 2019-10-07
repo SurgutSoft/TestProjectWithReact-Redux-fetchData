@@ -4,8 +4,27 @@ import { connect } from 'react-redux';
 import { fetchDataItems } from '../redux/actions/gallaryItems';
 import "../css/mainStyle.css"
 import { Spin, Button, Slider } from "./antd";
+import { Options } from "istanbul-reports";
 
-class App extends React.Component {
+interface IProps {
+  num_comments?: number;
+  permalink?: string;
+  thumbnail?: string;
+  title?: string;
+  filter?: Options | undefined;
+  items?: any;
+  isLoading?: boolean;
+  fetchData?: any;
+  enableAutoRefresh?: boolean;
+}
+
+interface IState {
+  enableAutoRefresh: boolean;
+  minComments: number;
+  maxComments: number;
+}
+
+class App extends React.Component<IProps, IState> {
   state = {
     enableAutoRefresh: false,
     minComments: 0,
@@ -26,29 +45,32 @@ class App extends React.Component {
         enableAutoRefresh: !state.enableAutoRefresh
       }),
       () => {
+        let autoRefresh: any
         if (this.state.enableAutoRefresh) {
-          this.autoRefresh = setInterval(this.getItems, 3000);
+          autoRefresh = setInterval(this.getItems, 3000);
         } else {
-          clearInterval(this.autoRefresh);
+          clearInterval(autoRefresh);
         }
       }
     );
   };
 
-  updateMinComments = event => {
+
+
+  updateMinComments = (event: any) => {
     this.setState({
       minComments: Number(event[0]),
-      maxComments: Number(event[1])
+      maxComments: Number(event[1]),
     });
   };
 
-  getItemsByComments = (items, minComments, maxComments) =>
+  getItemsByComments = (items: any, minComments: number, maxComments: number) =>
     items
-      .filter(item => item.data.num_comments >= minComments && item.data.num_comments <= maxComments)
-      .sort((a, b) => b.data.num_comments - a.data.num_comments);
+      .filter((item: any) => item.data.num_comments >= minComments && item.data.num_comments <= maxComments)
+      .sort((a: any, b: any) => b.data.num_comments - a.data.num_comments);
 
   render() {
-    const { items, isLoading, enableAutoRefresh, minComments } = this.props;
+    const { items, isLoading, enableAutoRefresh } = this.props;
     const itemsByComments = items && items.data && this.getItemsByComments(items.data.children, this.state.minComments, this.state.maxComments);
     return (
       <div className="mainPage">
@@ -56,7 +78,6 @@ class App extends React.Component {
         <div>
           <p>Current filter: {this.state.minComments} ... {this.state.maxComments}</p>
           <Button
-            type="button"
             style={{ marginBottom: "15px" }}
             onClick={this.updateAutoRefresh}
           >
@@ -67,22 +88,12 @@ class App extends React.Component {
           defaultValue={[this.state.minComments, this.state.maxComments]}
           style={{ marginLeft: 10, marginRight: 10, width: 'calc(100% - 20px)' }}
           onChange={this.updateMinComments}
-          >
-
-        </Slider>
-        {/* <input
-          type="range"
-          value={this.state.minComments}
-          onChange={this.updateMinComments}
-          min={0}
-          max={500}
-          style={{ width: "100%", marginBottom: "15px" }}
-        /> */}
+        />
         <div className="gallaryFlex">
           {isLoading ?
             <Spin size="default" />
             : itemsByComments && itemsByComments.length > 0 ? (
-              itemsByComments.map(item => (
+              itemsByComments.map((item: any) => (
                 <Item key={item.data.id} data={item.data} />
               ))
             ) : (
@@ -94,7 +105,7 @@ class App extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: any) => {
   return {
     items: state.items,
     isErrored: state.isErrored,
@@ -102,9 +113,9 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: any) => {
   return {
-    fetchData: (url) => dispatch(fetchDataItems(url))
+    fetchData: (url: string) => dispatch(fetchDataItems(url))
   };
 };
 

@@ -1,5 +1,5 @@
-export const ADD_ITEM = "ADD_NOTE";
-export const REMOVE_ITEM = "DELETE_NOTE";
+export const ADD_ITEM = "ADD_ITEM";
+export const REMOVE_ITEM = "DELETE_ITEM";
 export const FETCH_ITEMS_IS_SUCCESS = "FETCH_ITEMS_IS_SUCCESS";
 export const IS_ERRORED_FETCH_ITEMS = "IS_ERRORED_FETCH_ITEMS";
 export const IS_LOADING_ITEMS = "IS_LOADING_ITEMS";

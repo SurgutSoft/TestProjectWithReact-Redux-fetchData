@@ -25,6 +25,9 @@ interface IState {
 }
 
 class App extends React.Component<IProps, IState> {
+
+  private autoRefresh: number | undefined;
+
   state = {
     enableAutoRefresh: false,
     minComments: 0,
@@ -45,11 +48,10 @@ class App extends React.Component<IProps, IState> {
         enableAutoRefresh: !state.enableAutoRefresh
       }),
       () => {
-        let autoRefresh: any
         if (this.state.enableAutoRefresh) {
-          autoRefresh = setInterval(this.getItems, 3000);
+          this.autoRefresh = setInterval(this.getItems, 3000);
         } else {
-          clearInterval(autoRefresh);
+          clearInterval(this.autoRefresh);
         }
       }
     );

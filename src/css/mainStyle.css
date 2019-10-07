@@ -1,0 +1,16 @@
+.gallaryFlex{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.gallaryFlexItems{
+    border: 1px solid #000;
+    margin-bottom: 10px;
+    padding: 5px;
+}
+
+.mainPage{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

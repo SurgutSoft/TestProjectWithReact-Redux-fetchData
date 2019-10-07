@@ -1,14 +1,9 @@
 import React, { memo } from "react";
+import "../css/mainStyle.css"
 
 export const Item = memo(({ data }) => {
   return (
-    <div
-      style={{
-        border: "1px solid black",
-        marginBottom: "10px",
-        padding: "5px"
-      }}
-    >
+    <div className="gallaryFlexItems">
       {data.thumbnail !== "self" && <img src={data.thumbnail} alt="" />}
       <p>{data.title}</p>
       <p>Number of comments: {data.num_comments}</p>

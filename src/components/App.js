@@ -2,21 +2,14 @@ import React from "react";
 import { Item } from "./Item";
 import { connect } from 'react-redux';
 import { fetchDataItems } from '../redux/actions/gallaryItems';
+import "../css/mainStyle.css"
+import { Spin, Button, Slider } from "./antd";
 
 class App extends React.Component {
-  // constructor() {
-  //   super();
-
-  //   this.state = {
-  //     items: [],
-  //     isLoading: false,
-  //     enableAutoRefresh: false,
-  //     minComments: 0
-  //   };
-  // }
   state = {
     enableAutoRefresh: false,
-    minComments: 0
+    minComments: 0,
+    maxComments: 500,
   };
 
   componentDidMount() {
@@ -44,48 +37,58 @@ class App extends React.Component {
 
   updateMinComments = event => {
     this.setState({
-      minComments: Number(event.target.value)
+      minComments: Number(event[0]),
+      maxComments: Number(event[1])
     });
   };
 
-  getItemsByComments = (items, minComments) =>
+  getItemsByComments = (items, minComments, maxComments) =>
     items
-      .filter(item => item.data.num_comments >= minComments)
+      .filter(item => item.data.num_comments >= minComments && item.data.num_comments <= maxComments)
       .sort((a, b) => b.data.num_comments - a.data.num_comments);
 
   render() {
     const { items, isLoading, enableAutoRefresh, minComments } = this.props;
-    const itemsByComments = items && items.data && this.getItemsByComments(items.data.children, this.state.minComments);
+    const itemsByComments = items && items.data && this.getItemsByComments(items.data.children, this.state.minComments, this.state.maxComments);
     return (
-      <div>
+      <div className="mainPage">
         <h1>Top commented</h1>
         <div>
-          <p>Current filter: {this.state.minComments}</p>
-          <button
+          <p>Current filter: {this.state.minComments} ... {this.state.maxComments}</p>
+          <Button
             type="button"
             style={{ marginBottom: "15px" }}
             onClick={this.updateAutoRefresh}
           >
             {this.state.enableAutoRefresh ? "Stop" : "Start"} auto-refresh
-          </button>
+          </Button>
         </div>
-        <input
+        <Slider range min={0} max={500}
+          defaultValue={[this.state.minComments, this.state.maxComments]}
+          style={{ marginLeft: 10, marginRight: 10, width: 'calc(100% - 20px)' }}
+          onChange={this.updateMinComments}
+          >
+
+        </Slider>
+        {/* <input
           type="range"
           value={this.state.minComments}
           onChange={this.updateMinComments}
           min={0}
           max={500}
           style={{ width: "100%", marginBottom: "15px" }}
-        />
-        {isLoading ? (
-          <p>...Loading</p>
-        ) : itemsByComments && itemsByComments.length > 0 ? (
-          itemsByComments.map(item => (
-            <Item key={item.data.id} data={item.data} />
-          ))
-        ) : (
-              <p>No results found matching your criteria</p>
-            )}
+        /> */}
+        <div className="gallaryFlex">
+          {isLoading ?
+            <Spin size="default" />
+            : itemsByComments && itemsByComments.length > 0 ? (
+              itemsByComments.map(item => (
+                <Item key={item.data.id} data={item.data} />
+              ))
+            ) : (
+                <p>No results found matching your criteria</p>
+              )}
+        </div>
       </div>
     );
   }

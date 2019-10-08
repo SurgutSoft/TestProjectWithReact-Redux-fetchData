@@ -25,6 +25,13 @@ export function fetchItemsSuccess(items) {
     }
 }
 
+export function addNewItem(addedNewItem){
+    return {
+        type: ADD_ITEM,
+        addedNewItem: addedNewItem,
+    }
+}
+
 export function fetchDataItems(url) {
     return (dispatch) => {
         dispatch(isLoadingItems(true));
@@ -39,7 +46,7 @@ export function fetchDataItems(url) {
                 return response;
             })
             .then((response) => response.json())
-            .then((items) => dispatch(fetchItemsSuccess(items)))
+            .then((items) => dispatch(fetchItemsSuccess(items.data.children))) 
             .catch(() => dispatch(erroredFetchItems(true)));
     };
 }

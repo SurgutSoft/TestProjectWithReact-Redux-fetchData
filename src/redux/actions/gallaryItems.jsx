@@ -25,28 +25,42 @@ export function fetchItemsSuccess(items) {
     }
 }
 
-export function addNewItem(addedNewItem){
+export function addNewItem(addedNewItem) {
     return {
         type: ADD_ITEM,
         addedNewItem: addedNewItem,
     }
 }
 
+// export function fetchDataItems(url) {
+//     return (dispatch) => {
+//         dispatch(isLoadingItems(true));
+
+//         fetch(url)
+//             .then((response) => {
+//                 if (!response.ok) {
+//                     throw Error(response.statusText);
+//                 }
+
+//                 dispatch(isLoadingItems(false));
+//                 return response;
+//             })
+//             .then((response) => response.json())
+//             .then((items) => dispatch(fetchItemsSuccess(items.data.children)))
+//             .catch(() => dispatch(erroredFetchItems(true)));
+//     };
+// }
+
 export function fetchDataItems(url) {
-    return (dispatch) => {
+    return async (dispatch) => {
         dispatch(isLoadingItems(true));
+        let response = await fetch(url);
+        if (!response.ok) {
+            throw Error(response.statusText);
+        }
+        dispatch(isLoadingItems(false));
 
-        fetch(url)
-            .then((response) => {
-                if(!response.ok) {
-                    throw Error(response.statusText);
-                }
-
-                dispatch(isLoadingItems(false));
-                return response;
-            })
-            .then((response) => response.json())
-            .then((items) => dispatch(fetchItemsSuccess(items.data.children))) 
-            .catch(() => dispatch(erroredFetchItems(true)));
+        let items = await response.json();
+        dispatch(fetchItemsSuccess(items.data.children));
     };
 }

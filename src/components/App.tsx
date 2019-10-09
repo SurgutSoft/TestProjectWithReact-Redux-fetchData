@@ -5,6 +5,7 @@ import { fetchDataItems } from '../redux/actions/gallaryItems';
 import "../css/mainStyle.css"
 import { Spin, Button, Slider } from "./antd";
 import { Options } from "istanbul-reports";
+import FormAddGallaryItem from './forms/FormAddGallaryItem'
 
 interface IProps {
   num_comments?: number;
@@ -20,6 +21,7 @@ interface IProps {
 
 interface IState {
   enableAutoRefresh: boolean;
+  isOpenForm: boolean;
   minComments: number;
   maxComments: number;
 }
@@ -30,6 +32,7 @@ class App extends React.Component<IProps, IState> {
 
   state = {
     enableAutoRefresh: false,
+    isOpenForm: false,
     minComments: 0,
     maxComments: 500,
   };
@@ -57,7 +60,12 @@ class App extends React.Component<IProps, IState> {
     );
   };
 
-
+  handleOpenForm = () => {
+    this.setState({ isOpenForm: true })
+  }
+  onHandleCloseForm = () => {
+    this.setState({ isOpenForm: false })
+  }
 
   updateMinComments = (event: any) => {
     this.setState({
@@ -73,7 +81,7 @@ class App extends React.Component<IProps, IState> {
 
   render() {
     const { items, isLoading, enableAutoRefresh } = this.props;
-    const itemsByComments = items && items.data && this.getItemsByComments(items.data.children, this.state.minComments, this.state.maxComments);
+    const itemsByComments = items && this.getItemsByComments(items, this.state.minComments, this.state.maxComments);
     return (
       <div className="mainPage">
         <h1>Top commented</h1>
@@ -84,6 +92,12 @@ class App extends React.Component<IProps, IState> {
             onClick={this.updateAutoRefresh}
           >
             {this.state.enableAutoRefresh ? "Stop" : "Start"} auto-refresh
+          </Button>
+          <Button
+            style={{ marginBottom: "15px" }}
+            onClick={this.handleOpenForm}
+          >
+            add item
           </Button>
         </div>
         <Slider range min={0} max={500}
@@ -102,6 +116,7 @@ class App extends React.Component<IProps, IState> {
                 <p>No results found matching your criteria</p>
               )}
         </div>
+        {this.state.isOpenForm ? <FormAddGallaryItem visible={this.state.isOpenForm} onHandleCloseForm={this.onHandleCloseForm} /> : null}
       </div>
     );
   }
